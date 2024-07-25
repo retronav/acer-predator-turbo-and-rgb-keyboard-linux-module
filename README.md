@@ -1,14 +1,19 @@
 # Unofficial Acer Gaming RGB keyboard backlight and Turbo mode Linux kernel module (Acer Predator, Acer Helios, Acer Nitro)
+
+> **NOTE**
+>
+> This fork has code from the [latest `acer-wmi` kernel module](https://github.com/torvalds/linux/blob/master/drivers/platform/x86/acer-wmi.c) from the Linux kernel with [this patch](https://lore.kernel.org/r/all/CAMW3L+24ZGowtpURUbjoCoA+eZMF0wDae1izxS+HM2uz1L9Rig@mail.gmail.com/) applied manually for RGB support. The motivation of creating this fork is that the upstream module has support for PredatorSense v4 and mode switching (Quiet, Balanced, Performance, Turbo). The upstream `facer` module does not support mode switching for now and this is a result of me wanting the best of both worlds. **I do not have any extensive experience/knowledge in kernel driver development and this is just a result of an afternoon of tinkering and exploring the code. I'm happy to accept any real changes/feedback on this and learn from the experience. But hey, works on my machine (Acer Predator PHN16-71) though.**
+
 ![](keyboard.webp)
 
 [![GitHub repo Good Issues for newbies](https://img.shields.io/github/issues/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/good%20first%20issue?style=flat&logo=github&logoColor=green&label=Good%20First%20issues)](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) [![GitHub Help Wanted issues](https://img.shields.io/github/issues/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/help%20wanted?style=flat&logo=github&logoColor=b545d1&label=%22Help%20Wanted%22%20issues)](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) [![GitHub Help Wanted PRs](https://img.shields.io/github/issues-pr/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/help%20wanted?style=flat&logo=github&logoColor=b545d1&label=%22Help%20Wanted%22%20PRs)](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/pulls?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) [![GitHub repo Issues](https://img.shields.io/github/issues/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module?style=flat&logo=github&logoColor=red&label=Issues)](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/issues?q=is%3Aopen)   [![](https://dcbadge.vercel.app/api/server/bNa4Qw8rPH)](https://discord.gg/ybWvSRfSY5)
-    
+
 Inspired by [faustus(for asus)](https://github.com/hackbnw/faustus), this project extends current acer-wmi linux kernel module to support Acer gaming functions.
 
 
 
 > **Warning**
-> ## Use at your own risk! Acer was not involved in developing this driver, and everything is developed by reverse engeineering official Predator Sense app. This driver interacts with low-level WMI methods which haven't been tested on all series.  
+> ## Use at your own risk! Acer was not involved in developing this driver, and everything is developed by reverse engeineering official Predator Sense app. This driver interacts with low-level WMI methods which haven't been tested on all series.
 
 ### Donation:
 Donations are not required, but shows your ❤️ to open source and encourages me to implement more features for this project.
@@ -63,18 +68,18 @@ ___
 #### RGB Keyboard:
 I think dynamic RGB effects should work only on 4zone RGB keyboards like 300 series but haven't tested other models.
 
-Check the output of this command:  
-`# file /sys/bus/wmi/devices/7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56/`  
+Check the output of this command:
+`# file /sys/bus/wmi/devices/7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56/`
 If the directory exists, it may work fine. Otherwise, RGB will not work at all.
 
 ## Requirements
 If you have secure boot enabled, you are not using Ubuntu and installation failed with error `Key was rejected by service`, you can sign the module yourself by following the instructions [here](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/issues/28#issuecomment-1054423776).
 
 Install linux headers using your distro package manager:
-Ubuntu (or other Debian baseds distros):  
+Ubuntu (or other Debian baseds distros):
 `sudo apt-get install linux-headers-$(uname -r) gcc make`
 
-Arch (I don't use arch anymore btw):  
+Arch (I don't use arch anymore btw):
 `sudo pacman -S linux-headers`
 
 
@@ -117,10 +122,10 @@ sudo ./install_openrc.sh
 Turbo mode should work fine by using the turbo button on keyboard.
 
 For RGB, the module will mount a new character device at `/dev/acer-gkbbl-0` to communicate
-with kernel space.  
-To make it easier to interact with this device, a simple python script has been attached.  
-`./facer_rgb.py`  
-or check help for more advanced usage:  
+with kernel space.
+To make it easier to interact with this device, a simple python script has been attached.
+`./facer_rgb.py`
+or check help for more advanced usage:
 `./facer_rgb.py --help`
 
 ```
@@ -142,41 +147,41 @@ Interacts with experimental Acer-wmi kernel module.
 
 -s [speed]
     Animation Speed:
-    
+
     0 -> No animation speed (static)
     1 -> Slowest animation speed
     9 -> Fastest animation speed
-    
+
     You can use values between 1-9 to adjust the speed or increase speed even more than 255, but keep in mind
     that values higher than 9 were not used in the official PredatorSense application.
 
 -b [brightness]
     Keyboard backlight Brightness:
-    
+
     0   -> No backlight (turned off)
     100 -> Maximum backlight brightness
-    
+
 -d [direction]
     Animation direction:
-    
+
     1   -> Right to Left
     2   -> Left to Right
 
 -cR [red value]
     Some modes require specific [R]GB color
-    
+
     0   -> Minimum red range
     255 -> Maximum red range
 
 -cG [green value]
     Some modes require specific R[G]B color
-    
+
     0   -> Minimum green range
     255 -> Maximum green range
 
 -cB [blue value]
     Some modes require specific RG[B] color
-    
+
     0   -> Minimum blue range
     255 -> Maximum blue range
 
@@ -206,28 +211,28 @@ optional arguments:
 ```
 Sample usages:
 
-Breath effect with Purple color(speed=4, brightness=100):  
+Breath effect with Purple color(speed=4, brightness=100):
 `./facer_rgb.py -m 1 -s 4 -b 100 -cR 255 -cG 0 -cB 255`
 
-Neon effect(speed=3, brightness=100):  
+Neon effect(speed=3, brightness=100):
 `./facer_rgb.py -m 2 -s 3 -b 100`
 
-Wave effect(speed=5, brightness=100):  
+Wave effect(speed=5, brightness=100):
 `./facer_rgb.py -m 3 -s 5 -b 100`
 
-Shifting effect with Blue color (speed=5, brightness=100):  
+Shifting effect with Blue color (speed=5, brightness=100):
 `./facer_rgb.py -m 4 -s 5 -b 100 -cR 0 -cB 255 -cG 0`
 
-Zoom effect with Green color (speed=7, brightness=100):  
+Zoom effect with Green color (speed=7, brightness=100):
 `./facer_rgb.py -m 5 -s 7 -b 100 -cR 0 -cB 0 -cG 255`
 
 Static waving (speed=0):
 `./facer_rgb.py -m 3 -s 0 -b 100`
 
-Static mode coloring (zone=1 => most left zone, color=blue):  
+Static mode coloring (zone=1 => most left zone, color=blue):
 `./facer_rgb.py -m 0 -z 1 -cR 0 -cB 255 -cG 0`
 
-Static mode coloring (zone=4 => most right zone, color=purple) and save it as example:  
+Static mode coloring (zone=4 => most right zone, color=purple) and save it as example:
 `./facer_rgb.py -m 0 -z 4 -cR 255 -cB 255 -cG 0`
 
 Load the previously saved profile:
@@ -236,10 +241,10 @@ Load the previously saved profile:
 
 ## Known problems
 If installation failed, check this [issue](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/issues/4#issuecomment-905486393)
-If something didn't look right, do a reboot (or boot to windows) and play a little with some Predator Sense app to reset ACPI registers. 
+If something didn't look right, do a reboot (or boot to windows) and play a little with some Predator Sense app to reset ACPI registers.
 
 ## Uninstall:
-Simply run `./uninstall.sh` and (hopefully) everything should be back to normal.  
+Simply run `./uninstall.sh` and (hopefully) everything should be back to normal.
 If you have installed it as a service, simply run `./uninstal_service.sh`
 
 ## Uninstall FOR Arch Linux Only
@@ -248,8 +253,8 @@ If you install it from AUR repository RUN `sudo pacman -R Predator-Sense-systemd
 
 
 ## Feedback:
-If this worked or didn't worked for you, kindly make a new issue, and attach the following if possible:  
-`sudo dmidecode | grep "Product Name" -B 2 -A 4`  
+If this worked or didn't worked for you, kindly make a new issue, and attach the following if possible:
+`sudo dmidecode | grep "Product Name" -B 2 -A 4`
 `sudo cat /sys/firmware/acpi/tables/DSDT > dsdt.aml`
 
 
@@ -265,22 +270,22 @@ If this worked or didn't worked for you, kindly make a new issue, and attach the
 
 
 ## Roadmap:
-- [x] Send patch to kernel mainline (currently only turbo mode for 315-53 is implemented)  
-- [x] Implement Turbo mode  
-- [x] Implement RGB Dynamic effects (4-zone)  
+- [x] Send patch to kernel mainline (currently only turbo mode for 315-53 is implemented)
+- [x] Implement Turbo mode
+- [x] Implement RGB Dynamic effects (4-zone)
 - [x] Implement RGB Static coloring (4-zone)
 - [x] Install as a systemd service (Thanks to [Kapitoha](https://github.com/Kapitoha))
 - [x] Add support for saving\load\list profiles (Thanks to [jayrfs](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/pull/33))
 - [x] Install as openrc service (Thanks to [Axtloss](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module/pull/36))
-- [x] Make binary package For Arch Linux (By [mmsaeed509](https://github.com/mmsaeed509)). 
+- [x] Make binary package For Arch Linux (By [mmsaeed509](https://github.com/mmsaeed509)).
 - [x] GUI(Electron): ([Zehra](https://github.com/zehratullayl/Linux-Predator-GUI))
 - [x] GUI(wxPython with tray icon): ([x211321](https://github.com/x211321/RGB-Config-Acer-gkbbl-0))
 - [x] GUI(PyQt): ([0xb4dc0d3x](https://github.com/0xb4dc0d3x/Acer-RGB-Keyboard-Linux-Module-GUI))
 - [x] CLI(Bash): ([Zeaksblog/acer-rgb-menu](https://github.com/Zeaksblog/acer-rgb-menu))
 - [ ] Add DKMS or an Event to recompile module after kernel upgrades #113
 - [ ] Custom Fans speed
-- [ ] Implement RGB Dynamic effects (per key RGB)  
-- [ ] Implement RGB Static coloring (per key RGB)  
+- [ ] Implement RGB Dynamic effects (per key RGB)
+- [ ] Implement RGB Static coloring (per key RGB)
 
 
 ## License
